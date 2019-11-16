@@ -30,3 +30,11 @@ After provisioning fill in the __(Post Provision Value)__ for the ComsosDB Name,
 ```powershell
 ./install.ps1 -Show $true ## Load and validate the environment variables.
 ```
+
+### Run the Application and Test the API
+
+```powershell
+mvn clean spring-boot:run
+```
+
+Execute the [integration-tests](https://github.com/danielscholl/spring-api-user/blob/master/integration-tests/user.http) using the [Rest Client Extension](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
