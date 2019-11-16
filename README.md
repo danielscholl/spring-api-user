@@ -12,9 +12,9 @@ Default Environment Settings
 | --------------------          | ------------------------------------ | ---------------------------------------- |
 | _ARM_SUBSCRIPTION_ID_         | xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx | Azure Subscription Id                    |
 | _AZURE_LOCATION_              | CentralUS                            | Azure Region for Resources to be located |
-| _PROJECT_COSMOSDB_NAME_       | __(Post Provision Value)__           | CosmosDB Name                            |
-| _PROJECT_COSMOSDB_URI_        | __(Post Provision Value)__           | CosmosDB URI                             |
-| _PROJECT_COSMOSDB_KEY_        | __(Post Provision Value)__           | CosmosDB Primary Key                     |
+| _cosmosdb_database_           | __(Post Provision Value)__           | CosmosDB Name                            |
+| _cosmosdb_account_            | __(Post Provision Value)__           | CosmosDB URI                             |
+| _cosmosdb_key_                | __(Post Provision Value)__           | CosmosDB Primary Key                     |
 
 ### Provision Infrastruture
 
