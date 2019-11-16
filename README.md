@@ -1,4 +1,4 @@
-# Spring Friends API Sample
+# Spring API Sample
 
 This repository is a simple API example using CosmosDB.
 
