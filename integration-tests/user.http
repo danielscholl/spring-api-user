@@ -1,0 +1,56 @@
+@host = localhost:8080
+@firstName = john
+
+# -----------------------
+# API: user-api
+###
+# @name createUser
+POST http://{{host}}/api/user
+Content-Type: application/json
+
+{
+    "firstName": "John",
+    "lastName": "Doe",
+    "address": "1234 First St Dallas, TX 75038"
+}
+
+@userId = {{createUser.response.body.id}}
+
+# -----------------------
+# API: user-api
+###
+# @name getUsers
+GET http://{{host}}/api/user
+Accept: application/json
+
+
+# -----------------------
+# API: user-api
+###
+# @name getUserById
+GET http://{{host}}/api/user/{{userId}}
+Accept: application/json
+
+
+
+# -----------------------
+# API: user-api
+###
+# @name updateUser
+PUT http://{{host}}/api/user
+Content-Type: application/json
+
+{
+    "id": "{{userId}}",
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "address": "1234 First St Dallas, TX 75038"
+}
+
+
+# -----------------------
+# API: user-api
+###
+# @name deleteUser
+DELETE http://{{host}}/api/user/{{userId}}
+Accept: application/json

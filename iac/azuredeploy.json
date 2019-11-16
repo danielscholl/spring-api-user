@@ -1,0 +1,119 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "initials": {
+            "type": "string",
+            "metadata": {
+                "description": "Small unique string."
+            }
+        },
+        "random": {
+            "type": "int",
+            "metadata": {
+                "description": "3 Digit Random Integer"
+            },
+            "minValue": 100,
+            "maxValue": 999
+        },
+        "databaseName": {
+            "type": "string",
+            "metadata": {
+                "description": "Cosmos Database Name."
+            }
+        },
+        "containerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Cosmos Database Container Name."
+            }
+        },
+        "partionKey": {
+            "type": "string",
+            "metadata": {
+                "description": "Cosmos Database Container Partition Path."
+            }
+        }
+    },
+    "variables": {
+        "DbAccountName": "[concat('cosmosdb', parameters('random'))]",
+        "DbAccountId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('DbAccountName'))]",
+        "DBSharedThroughput": "400" 
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "name": "[variables('DbAccountName')]",
+            "apiVersion": "2019-08-01",
+            "kind": "GlobalDocumentDB",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "contact": "[parameters('initials')]"
+            },
+            "properties": {
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "locations": [ 
+                    {
+                        "locationName": "[resourceGroup().location]",
+                        "failoverPriority": 0,
+                        "isZoneRedundant": false
+                    }
+                ],
+                "databaseAccountOfferType": "Standard",
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+            "name": "[concat(variables('DbAccountName'), '/', parameters('databaseName'))]",
+            "apiVersion": "2019-08-01",
+            "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('DbAccountName'))]" ],
+            "properties":{
+                "resource":{
+                    "id": "[parameters('databaseName')]"
+                },
+                "options": { "throughput": "[variables('DBSharedThroughput')]" }
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+            "name": "[concat(variables('DbAccountName'), '/', parameters('databaseName'), '/', parameters('containerName'))]",
+            "apiVersion": "2019-08-01",
+            "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('DbAccountName'), parameters('databaseName'))]" ],
+            "properties":
+            {
+                "resource":{
+                    "id":  "[parameters('containerName')]",
+                    "partitionKey": {
+                        "paths": [
+                            "[parameters('partionKey')]"
+                        ],
+                        "kind": "Hash"
+                    },
+                    "indexingPolicy": {
+                        "indexingMode": "consistent",
+                        "includedPaths": [{
+                                "path": "/*"
+                            }
+                        ]
+                    }
+                },
+                "options":{}
+            }
+        }
+    ],
+    "outputs": {
+        "cosmosDb": {
+            "type": "object",
+            "value": {
+                "id": "[variables('DbAccountId')]",
+                "name": "[variables('DbAccountName')]"
+            }
+        }
+    }
+}
