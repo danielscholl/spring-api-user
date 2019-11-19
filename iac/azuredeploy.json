@@ -44,7 +44,7 @@
     "variables": {
         "HostingPlanName": "[concat('plan-linux', parameters('random'))]",
         "SiteName": "[concat('web-linux', parameters('random'))]",
-        "DbAccountName": "[concat('cosmosdb', parameters('random'))]",
+        "DbAccountName": "[concat('db-cosmos', parameters('random'))]",
         "DbAccountId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('DbAccountName'))]",
         "DBSharedThroughput": "400",
         "DBApiVersion": "[providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]]"
@@ -143,7 +143,7 @@
         {
             "type": "Microsoft.Web/sites",
             "name": "[variables('SiteName')]",
-            "apiVersion": "2019-08-01",
+            "apiVersion": "2018-11-01",
             "location": "[resourceGroup().location]",
             "kind": "app,linux.container",
             "dependsOn": [
@@ -151,8 +151,11 @@
                 "[resourceId('Microsoft.Web/serverfarms', variables('HostingPlanName'))]"
             ],
             "properties": {
+                "name": "[variables('SiteName')]",
+                "serverFarmId": "[variables('hostingPlanName')]",
                 "siteConfig": {
-                    "DOCKER_CUSTOM_IMAGE_NAME": "[parameters('imageName')]",
+                    "linuxFxVersion": "[concat('DOCKER|', parameters('imageName'))]",
+                    "alwaysOn": true,
                     "appSettings": [
                         {
                             "name": "cosmosdb_database",
@@ -167,12 +170,7 @@
                             "value": "[listKeys(variables('DbAccountId'), variables('DBApiVersion')).primaryMasterKey]"
                         }
                     ]
-
-                },
-
-                "name": "[variables('SiteName')]",
-                "serverFarmId": "[variables('hostingPlanName')]",
-                "hostingEnvironment": ""
+                }
             }
         }
     ],
@@ -184,6 +182,13 @@
                 "cosmosdb_database": "[variables('DbAccountName')]",
                 "cosmosdb_account": "[reference(variables('DbAccountId'), variables('DBApiVersion')).documentEndpoint]",
                 "cosmosdb_key": "[listKeys(variables('DbAccountId'), variables('DBApiVersion')).primaryMasterKey]"
+            }
+        },
+        "webApp": {
+            "type": "object",
+            "value": {
+                "plan_name": "[variables('HostingPlanName')]",
+                "web_name": "[variables('SiteName')]"
             }
         }
     }

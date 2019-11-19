@@ -29,6 +29,7 @@ Param(
 . .env.ps1
 Get-ChildItem Env:ARM*
 Get-ChildItem Env:AZURE*
+Get-ChildItem Env:PROJECT*
 Get-ChildItem Env:cosmosdb*
 
 if ( !$Initials) { $Initials = "spring" }

@@ -88,12 +88,12 @@
 					<authentication>
 						<serverId>azure-auth</serverId>
 					</authentication>
-					<resourceGroup>${RESOURCE_GROUP}</resourceGroup>
-					<appName>${WEBAPP_NAME}</appName>
-					<region>${LOCATION}</region>
+					<resourceGroup>${PROJECT_GROUP}</resourceGroup>
+					<appName>${PROJECT_WEB}</appName>
+					<region>${AZURE_LOCATION}</region>
 					<pricingTier>P1V2</pricingTier>
-					<appServicePlanResourceGroup>${RESOURCE_GROUP}</appServicePlanResourceGroup>
-					<appServicePlanName>${PLAN_NAME}</appServicePlanName>
+					<appServicePlanResourceGroup>${PROJECT_GROUP}</appServicePlanResourceGroup>
+					<appServicePlanName>${PROJECT_PLAN}</appServicePlanName>
 					<runtime>
 						<os>Docker</os>
 						<image>${REGISTRY_SERVER}/spring-${project.artifactId}</image>
