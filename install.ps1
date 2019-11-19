@@ -147,6 +147,7 @@ if ( !$ResourceGroupName) { $ResourceGroupName = "$Initials-$DEPLOYMENT" }
 $UNIQUE = CreateResourceGroup $ResourceGroupName $Location
 
 ResourceProvider Microsoft.DocumentDB
+ResourceProvider Microsoft.Web
 
 
 ##############################
