@@ -35,16 +35,15 @@ After provisioning fill in the __(Post Provision Value)__ for the .env.ps1 varia
     - PROJECT_WEB
 
 _Example Output_
-```powershell
-===============  =========================  ==========
-cosmosDb         Object                     {
-"cosmosdb_database": "db-cosmos000",
-"cosmosdb_account": "https://db-cosmos000.documents.azure.com:443/",
-"cosmosdb_key": "fNzvwAosQHoDto0ViThuyTm64Uu1Fyuz0gw7nh0NZP5w7MWBeoxQxRZEn2TJPTkLqrd70s6vBgj9yBX9hnxXXg=="
+```json
+cosmosDbObject:  {
+    "cosmosdb_database": "db-cosmos000",
+    "cosmosdb_account": "https://db-cosmos000.documents.azure.com:443/",
+    "cosmosdb_key": "fNzvwAosQHoDto0ViThuyTm64Uu1Fyuz0gw7nh0NZP5w7MWBeoxQxRZEn2TJPTkLqrd70s6vBgj9yBX9hnxXXg=="
 }
-webApp           Object                     {
-"PROJECT_PLAN": "plan-linux000",
-"PROJECT_WEB": "web-linux000"
+webAppObject:    {
+    "PROJECT_PLAN": "plan-linux000",
+    "PROJECT_WEB": "web-linux000"
 }
 ```
 
