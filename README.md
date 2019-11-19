@@ -47,7 +47,7 @@ webAppObject:    {
 }
 ```
 
-### Run the Application Locally and Test the API
+### Run the Application Locally and Test the API  (Optional)
 
 ```powershell
 # Run compiled locally.
