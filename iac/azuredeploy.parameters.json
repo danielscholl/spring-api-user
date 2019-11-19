@@ -10,6 +10,9 @@
         },
         "partionKey": {
             "value": "/lastName"
+        },
+        "imageName": {
+            "value": "danielscholl/spring-user-api"
         }
     }
 }

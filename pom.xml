@@ -79,6 +79,44 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.microsoft.azure</groupId>
+				<artifactId>azure-webapp-maven-plugin</artifactId>
+				<version>1.8.0</version>
+				<configuration>
+					<schemaVersion>v2</schemaVersion>
+					<authentication>
+						<serverId>azure-auth</serverId>
+					</authentication>
+					<resourceGroup>${RESOURCE_GROUP}</resourceGroup>
+					<appName>${WEBAPP_NAME}</appName>
+					<region>${LOCATION}</region>
+					<pricingTier>P1V2</pricingTier>
+					<appServicePlanResourceGroup>${RESOURCE_GROUP}</appServicePlanResourceGroup>
+					<appServicePlanName>${PLAN_NAME}</appServicePlanName>
+					<runtime>
+						<os>Docker</os>
+						<image>${REGISTRY_SERVER}/spring-${project.artifactId}</image>
+					</runtime>		
+					<containerSettings>
+						<imageName>${REGISTRY_SERVER}/spring-${project.artifactId}</imageName>
+					</containerSettings>
+					<appSettings>
+						<property>
+							<name>cosmosdb_account</name>
+							<value>${cosmosdb_account}</value>
+						</property>
+						<property>
+							<name>cosmosdb_key</name>
+							<value>${cosmosdb_key}</value>
+						</property>
+						<property>
+							<name>cosmosdb_database</name>
+							<value>${cosmosdb_database}</value>
+						</property>
+					</appSettings>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

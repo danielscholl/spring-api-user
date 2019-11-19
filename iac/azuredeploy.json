@@ -16,6 +16,12 @@
             "minValue": 100,
             "maxValue": 999
         },
+        "imageName": {
+            "type": "string",
+            "metadata": {
+                "description": "Docker Image."
+            }
+        },
         "databaseName": {
             "type": "string",
             "metadata": {
@@ -36,9 +42,12 @@
         }
     },
     "variables": {
+        "HostingPlanName": "[concat('plan-linux', parameters('random'))]",
+        "SiteName": "[concat('web-linux', parameters('random'))]",
         "DbAccountName": "[concat('cosmosdb', parameters('random'))]",
         "DbAccountId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('DbAccountName'))]",
-        "DBSharedThroughput": "400" 
+        "DBSharedThroughput": "400",
+        "DBApiVersion": "[providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]]"
     },
     "resources": [
         {
@@ -56,7 +65,7 @@
                     "maxIntervalInSeconds": 5,
                     "maxStalenessPrefix": 100
                 },
-                "locations": [ 
+                "locations": [
                     {
                         "locationName": "[resourceGroup().location]",
                         "failoverPriority": 0,
@@ -72,23 +81,28 @@
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
             "name": "[concat(variables('DbAccountName'), '/', parameters('databaseName'))]",
             "apiVersion": "2019-08-01",
-            "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('DbAccountName'))]" ],
-            "properties":{
-                "resource":{
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('DbAccountName'))]"
+            ],
+            "properties": {
+                "resource": {
                     "id": "[parameters('databaseName')]"
                 },
-                "options": { "throughput": "[variables('DBSharedThroughput')]" }
+                "options": {
+                    "throughput": "[variables('DBSharedThroughput')]"
+                }
             }
         },
         {
             "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
             "name": "[concat(variables('DbAccountName'), '/', parameters('databaseName'), '/', parameters('containerName'))]",
             "apiVersion": "2019-08-01",
-            "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('DbAccountName'), parameters('databaseName'))]" ],
-            "properties":
-            {
-                "resource":{
-                    "id":  "[parameters('containerName')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('DbAccountName'), parameters('databaseName'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "[parameters('containerName')]",
                     "partitionKey": {
                         "paths": [
                             "[parameters('partionKey')]"
@@ -97,13 +111,68 @@
                     },
                     "indexingPolicy": {
                         "indexingMode": "consistent",
-                        "includedPaths": [{
+                        "includedPaths": [
+                            {
                                 "path": "/*"
                             }
                         ]
                     }
                 },
-                "options":{}
+                "options": {
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "name": "[variables('HostingPlanName')]",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "kind": "linux",
+            "properties": {
+                "name": "[variables('HostingPlanName')]",
+                "workerSizeId": "1",
+                "reserved": true,
+                "numberOfWorkers": "1",
+                "hostingEnvironment": ""
+            },
+            "sku": {
+                "Tier": "Standard",
+                "Name": "S1"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "name": "[variables('SiteName')]",
+            "apiVersion": "2019-08-01",
+            "location": "[resourceGroup().location]",
+            "kind": "app,linux.container",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('DbAccountName'), parameters('databaseName'))]",
+                "[resourceId('Microsoft.Web/serverfarms', variables('HostingPlanName'))]"
+            ],
+            "properties": {
+                "siteConfig": {
+                    "DOCKER_CUSTOM_IMAGE_NAME": "[parameters('imageName')]",
+                    "appSettings": [
+                        {
+                            "name": "cosmosdb_database",
+                            "value": "[variables('DbAccountName')]"
+                        },
+                        {
+                            "name": "cosmosdb_account",
+                            "value": "[reference(variables('DbAccountId'), variables('DBApiVersion')).documentEndpoint]"
+                        },
+                        {
+                            "name": "cosmosdb_key",
+                            "value": "[listKeys(variables('DbAccountId'), variables('DBApiVersion')).primaryMasterKey]"
+                        }
+                    ]
+
+                },
+
+                "name": "[variables('SiteName')]",
+                "serverFarmId": "[variables('hostingPlanName')]",
+                "hostingEnvironment": ""
             }
         }
     ],
@@ -112,7 +181,9 @@
             "type": "object",
             "value": {
                 "id": "[variables('DbAccountId')]",
-                "name": "[variables('DbAccountName')]"
+                "cosmosdb_database": "[variables('DbAccountName')]",
+                "cosmosdb_account": "[reference(variables('DbAccountId'), variables('DBApiVersion')).documentEndpoint]",
+                "cosmosdb_key": "[listKeys(variables('DbAccountId'), variables('DBApiVersion')).primaryMasterKey]"
             }
         }
     }

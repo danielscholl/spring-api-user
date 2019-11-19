@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  spring-user-api:
+    image: ${REGISTRY_SERVER)/spring-user-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      cosmosdb_account: ${cosmosdb_account}
+      cosmosdb_key: ${cosmosdb_key}
+      cosmosdb_database: ${cosmosdb_database}   
