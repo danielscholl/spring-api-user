@@ -178,7 +178,6 @@
         "cosmosDb": {
             "type": "object",
             "value": {
-                "id": "[variables('DbAccountId')]",
                 "cosmosdb_database": "[variables('DbAccountName')]",
                 "cosmosdb_account": "[reference(variables('DbAccountId'), variables('DBApiVersion')).documentEndpoint]",
                 "cosmosdb_key": "[listKeys(variables('DbAccountId'), variables('DBApiVersion')).primaryMasterKey]"
@@ -187,8 +186,8 @@
         "webApp": {
             "type": "object",
             "value": {
-                "plan_name": "[variables('HostingPlanName')]",
-                "web_name": "[variables('SiteName')]"
+                "PROJECT_PLAN": "[variables('HostingPlanName')]",
+                "PROJECT_WEB": "[variables('SiteName')]"
             }
         }
     }
