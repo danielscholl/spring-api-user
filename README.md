@@ -2,6 +2,8 @@
 
 This repository is a simple API example using CosmosDB.
 
+[![Build Status](https://dascholl.visualstudio.com/osdu/_apis/build/status/danielscholl.spring-api-user?branchName=master)](https://dascholl.visualstudio.com/osdu/_build/latest?definitionId=64&branchName=master)
+
 ### Create Environment File
 
 Create an environment setting file in the root directory and microservice directories ie:  `.env.ps1`
