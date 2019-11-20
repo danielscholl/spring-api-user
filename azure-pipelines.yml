@@ -1,6 +1,11 @@
-# Docker
-# Build and push an image to Azure Container Registry
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+# Required Group Variables
+# SERVICE_ENDPOINT_REGISTRY
+# SERVICE_ENDPOINT_ARM
+# SUBSCRIPTION
+# RESOURCE_GROUP
+# DOCKER_IMAGE_NAME
+# PROJECT_RANDOM
+# PROJECT_CONTACT
 
 trigger:
 - master
@@ -12,30 +17,9 @@ variables:
   - group: spring-api
   
 stages:
-- stage: Infrastructure
-  displayName: Deploy Infrastructure
-  jobs:
-  - job: Provision
-    displayName: Provision
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-      - task: AzureResourceManagerTemplateDeployment@3
-        inputs:
-          deploymentScope: 'Resource Group'
-          ConnectedServiceName: '$(SERVICE_ENDPOINT)'
-          subscriptionName: '$(SUBSCRIPTION)'
-          action: 'Create Or Update Resource Group'
-          resourceGroupName: '$(RESOURCE_GROUP)'
-          location: 'Central US'
-          templateLocation: 'Linked artifact'
-          csmFile: './iac/azuredeploy.json'
-          csmParametersFile: './iac/azuredeploy.parameters.json'
-          overrideParameters: '-random $(RANDOM) -initials $(CONTACT)'
-          deploymentMode: 'Incremental'
-          deploymentName: 'pipeline'
+
 - stage: Build
-  displayName: Build and push stage
+  displayName: Build and Push Image
   jobs:  
   - job: Build
     displayName: Build
@@ -46,8 +30,32 @@ stages:
       displayName: Build and push an image to container registry
       inputs:
         command: buildAndPush
-        repository: '$(IMAGE_NAME)'
+        repository: '$(DOCKER_IMAGE_NAME)'
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        containerRegistry: $(AZURE_REGISTRY)
+        containerRegistry: $(SERVICE_ENDPOINT_REGISTRY)
         tags: |
           $(Build.BuildId)
+          latest
+
+- stage: Infrastructure
+  displayName: Deploy Azure Infrastructure
+  jobs:
+  - job: Provision
+    displayName: Provision
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        inputs:
+          deploymentScope: 'Resource Group'
+          ConnectedServiceName: '$(SERVICE_ENDPOINT_ARM)'
+          subscriptionName: '$(SUBSCRIPTION)'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: '$(RESOURCE_GROUP)'
+          location: 'Central US'
+          templateLocation: 'Linked artifact'
+          csmFile: './iac/azuredeploy.json'
+          csmParametersFile: './iac/azuredeploy.parameters.json'
+          overrideParameters: '-random $(PROJECT_RANDOM) -databaseName $(RESOURCE_GROUP) -imageName $(SERVICE_ENDPOINT_REGISTRY)/$(IMAGE_NAME) -initials $(PROJECT_CONTACT)'
+          deploymentMode: 'Incremental'
+          deploymentName: 'pipeline'
