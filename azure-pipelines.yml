@@ -9,18 +9,41 @@ resources:
 - repo: self
 
 variables:
-- group: deploy-group
+  registryServiceEndpoint: 'AZURE_REGISTRY'
+  imageRepository: 'spring-api-user'
+  vmImageName: 'ubuntu-latest'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
   
 stages:
+- stage: Infrastructure
+  displayName: Deploy Infrastructure
+  jobs:
+  - job: Provision
+    variables:
+    - group: deploy-group
+    displayName: Provision
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              ConnectedServiceName: '$(SERVICE_ENDPOINT)'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: '$(SPRING_USER_API_GROUP)'
+              location: 'Central US'
+              templateLocation: 'Linked artifact'
+              csmFileLink: '$(artifactsLocation)WebSite.json$(artifactsLocationSasToken)'
+              csmFile: './iac/azuredeploy.json'
+              csmParametersFile: './iac/azuredeploy.parameters.json'
+              overrideParameters: '-random $(RANDOM) -_artifactsLocationSasToken "$(artifactsLocationSasToken)"'
+              deploymentMode: 'Incremental'
+              deploymentName: 'pipeline'
 - stage: Build
   displayName: Build and push stage
   jobs:  
   - job: Build
-    variables:
-      vmImageName: 'ubuntu-latest'
-      imageRepository: 'spring-api-user'
-      dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-      tag: '$(Build.BuildId)'
     displayName: Build
     pool:
       vmImage: $(vmImageName)
@@ -31,6 +54,6 @@ stages:
         command: buildAndPush
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
-        containerRegistry: $(CONTAINER_REGISTRY)
+        containerRegistry: $(registryServiceEndpoint)
         tags: |
           $(tag)
