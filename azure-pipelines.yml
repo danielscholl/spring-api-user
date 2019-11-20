@@ -9,16 +9,12 @@ resources:
 - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'AZURE_REGISTRY'
+- group: deploy-group
+  vmImageName: 'ubuntu-latest'
   imageRepository: 'spring-api-user'
-  containerRegistry: 'danielscholl.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
   
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
-
 stages:
 - stage: Build
   displayName: Build and push stage
@@ -34,6 +30,6 @@ stages:
         command: buildAndPush
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
+        containerRegistry: $(CONTAINER_REGISTRY)
         tags: |
           $(tag)
