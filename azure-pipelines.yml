@@ -29,7 +29,8 @@ stages:
       - task: AzureResourceManagerTemplateDeployment@3
         inputs:
           deploymentScope: 'Resource Group'
-          azureSubscription: '$(SERVICE_ENDPOINT)'
+          ConnectedServiceName: '$(SERVICE_ENDPOINT)'
+          azureSubscription: '$(SUBSCRIPTION)'
           action: 'Create Or Update Resource Group'
           resourceGroupName: '$(SPRING_USER_API_GROUP)'
           location: 'Central US'
