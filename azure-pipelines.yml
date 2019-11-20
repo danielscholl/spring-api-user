@@ -27,19 +27,19 @@ stages:
       vmImage: $(vmImageName)
     steps:
       - task: AzureResourceManagerTemplateDeployment@3
-            inputs:
-              deploymentScope: 'Resource Group'
-              ConnectedServiceName: '$(SERVICE_ENDPOINT)'
-              action: 'Create Or Update Resource Group'
-              resourceGroupName: '$(SPRING_USER_API_GROUP)'
-              location: 'Central US'
-              templateLocation: 'Linked artifact'
-              csmFileLink: '$(artifactsLocation)WebSite.json$(artifactsLocationSasToken)'
-              csmFile: './iac/azuredeploy.json'
-              csmParametersFile: './iac/azuredeploy.parameters.json'
-              overrideParameters: '-random $(RANDOM) -_artifactsLocationSasToken "$(artifactsLocationSasToken)"'
-              deploymentMode: 'Incremental'
-              deploymentName: 'pipeline'
+        inputs:
+          deploymentScope: 'Resource Group'
+          ConnectedServiceName: '$(SERVICE_ENDPOINT)'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: '$(SPRING_USER_API_GROUP)'
+          location: 'Central US'
+          templateLocation: 'Linked artifact'
+          csmFileLink: '$(artifactsLocation)WebSite.json$(artifactsLocationSasToken)'
+          csmFile: './iac/azuredeploy.json'
+          csmParametersFile: './iac/azuredeploy.parameters.json'
+          overrideParameters: '-random $(RANDOM) -_artifactsLocationSasToken "$(artifactsLocationSasToken)"'
+          deploymentMode: 'Incremental'
+          deploymentName: 'pipeline'
 - stage: Build
   displayName: Build and push stage
   jobs:  
