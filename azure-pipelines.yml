@@ -18,7 +18,7 @@ stages:
   - job: Provision
     displayName: Provision
     pool:
-      vmImage: $(vmImageName)
+      vmImage: 'ubuntu-latest'
     steps:
       - task: AzureResourceManagerTemplateDeployment@3
         inputs:
