@@ -26,7 +26,7 @@ stages:
           ConnectedServiceName: 'dascholl-CAT(2e458de2-af10-484c-a5a5-6c259d9a907f)'
           subscriptionName: '$(SUBSCRIPTION)'
           action: 'Create Or Update Resource Group'
-          resourceGroupName: '$(SPRING_USER_API_GROUP)'
+          resourceGroupName: '$(SPRING_USER_API)'
           location: 'Central US'
           templateLocation: 'Linked artifact'
           csmFileLink: '$(artifactsLocation)WebSite.json$(artifactsLocationSasToken)'
@@ -40,21 +40,15 @@ stages:
   jobs:  
   - job: Build
     displayName: Build
-    variables:
-      registryServiceEndpoint: 'AZURE_REGISTRY'
-      imageRepository: 'spring-api-user'
-      vmImageName: 'ubuntu-latest'
-      dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-      tag: '$(Build.BuildId)'
     pool:
-      vmImage: $(vmImageName)
+      vmImage: 'ubuntu-latest'
     steps:
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
         command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(registryServiceEndpoint)
+        repository: '$(SPRING_USER_API)'
+        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        containerRegistry: $(AZURE_REGISTRY)
         tags: |
-          $(tag)
+          $(Build.BuildId)
