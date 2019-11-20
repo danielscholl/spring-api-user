@@ -10,16 +10,17 @@ resources:
 
 variables:
 - group: deploy-group
-  vmImageName: 'ubuntu-latest'
-  imageRepository: 'spring-api-user'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
   
 stages:
 - stage: Build
   displayName: Build and push stage
   jobs:  
   - job: Build
+    variables:
+      vmImageName: 'ubuntu-latest'
+      imageRepository: 'spring-api-user'
+      dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+      tag: '$(Build.BuildId)'
     displayName: Build
     pool:
       vmImage: $(vmImageName)
