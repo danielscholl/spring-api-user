@@ -9,7 +9,7 @@ resources:
 - repo: self
 
 variables:
-  - group: deploy-group
+  - group: spring-api
   
 stages:
 - stage: Infrastructure
@@ -23,16 +23,15 @@ stages:
       - task: AzureResourceManagerTemplateDeployment@3
         inputs:
           deploymentScope: 'Resource Group'
-          ConnectedServiceName: 'dascholl-CAT(2e458de2-af10-484c-a5a5-6c259d9a907f)'
+          ConnectedServiceName: '$(SERVICE_ENDPOINT)'
           subscriptionName: '$(SUBSCRIPTION)'
           action: 'Create Or Update Resource Group'
-          resourceGroupName: '$(SPRING_USER_API)'
+          resourceGroupName: '$(RESOURCE_GROUP)'
           location: 'Central US'
           templateLocation: 'Linked artifact'
-          csmFileLink: '$(artifactsLocation)WebSite.json$(artifactsLocationSasToken)'
           csmFile: './iac/azuredeploy.json'
           csmParametersFile: './iac/azuredeploy.parameters.json'
-          overrideParameters: '-random $(RANDOM)'
+          overrideParameters: '-random $(RANDOM) -initials $(CONTACT)'
           deploymentMode: 'Incremental'
           deploymentName: 'pipeline'
 - stage: Build
@@ -47,7 +46,7 @@ stages:
       displayName: Build and push an image to container registry
       inputs:
         command: buildAndPush
-        repository: '$(SPRING_USER_API)'
+        repository: '$(IMAGE_NAME)'
         dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
         containerRegistry: $(AZURE_REGISTRY)
         tags: |
