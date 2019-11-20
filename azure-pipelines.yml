@@ -32,7 +32,7 @@ stages:
           csmFileLink: '$(artifactsLocation)WebSite.json$(artifactsLocationSasToken)'
           csmFile: './iac/azuredeploy.json'
           csmParametersFile: './iac/azuredeploy.parameters.json'
-          overrideParameters: '-random $(RANDOM) -_artifactsLocationSasToken "$(artifactsLocationSasToken)"'
+          overrideParameters: '-random $(RANDOM)'
           deploymentMode: 'Incremental'
           deploymentName: 'pipeline'
 - stage: Build
