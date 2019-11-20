@@ -9,19 +9,13 @@ resources:
 - repo: self
 
 variables:
-  registryServiceEndpoint: 'AZURE_REGISTRY'
-  imageRepository: 'spring-api-user'
-  vmImageName: 'ubuntu-latest'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
+  - group: deploy-group
   
 stages:
 - stage: Infrastructure
   displayName: Deploy Infrastructure
   jobs:
   - job: Provision
-    variables:
-    - group: deploy-group
     displayName: Provision
     pool:
       vmImage: $(vmImageName)
@@ -46,6 +40,12 @@ stages:
   jobs:  
   - job: Build
     displayName: Build
+    variables:
+      registryServiceEndpoint: 'AZURE_REGISTRY'
+      imageRepository: 'spring-api-user'
+      vmImageName: 'ubuntu-latest'
+      dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+      tag: '$(Build.BuildId)'
     pool:
       vmImage: $(vmImageName)
     steps:
