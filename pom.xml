@@ -24,19 +24,21 @@
 		<dependency>
 			<groupId>io.projectreactor.netty</groupId>
 			<artifactId>reactor-netty</artifactId>
-			<version>0.9.1.RELEASE</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.microsoft.azure</groupId>
 			<artifactId>azure-cosmosdb-spring-boot-starter</artifactId>
-			<version>2.2.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.microsoft.azure</groupId>
 			<artifactId>azure-cosmosdb-spring-boot-starter</artifactId>
-			<version>2.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
 		</dependency>
 
 		<dependency>
@@ -89,11 +91,11 @@
 						<serverId>azure-auth</serverId>
 					</authentication>
 					<resourceGroup>${PROJECT_GROUP}</resourceGroup>
-					<appName>${PROJECT_WEB}</appName>
+					<appName>web-linux${PROJECT_RANDOM}</appName>
 					<region>${AZURE_LOCATION}</region>
 					<pricingTier>P1V2</pricingTier>
 					<appServicePlanResourceGroup>${PROJECT_GROUP}</appServicePlanResourceGroup>
-					<appServicePlanName>${PROJECT_PLAN}</appServicePlanName>
+					<appServicePlanName>plan-linux${PROJECT_RANDOM}</appServicePlanName>
 					<runtime>
 						<os>Docker</os>
 						<image>${REGISTRY_SERVER}/spring-${project.artifactId}</image>

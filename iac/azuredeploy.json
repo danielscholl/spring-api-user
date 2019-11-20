@@ -175,6 +175,12 @@
         }
     ],
     "outputs": {
+        "project": {
+            "type": "object",
+            "value": {
+                "PROJECT_RANDOM": "[parameters('random')]"
+            }
+        },
         "cosmosDb": {
             "type": "object",
             "value": {
@@ -186,8 +192,8 @@
         "webApp": {
             "type": "object",
             "value": {
-                "PROJECT_PLAN": "[variables('HostingPlanName')]",
-                "PROJECT_WEB": "[variables('SiteName')]"
+                "plan_name": "[variables('HostingPlanName')]",
+                "webapp_name": "[variables('SiteName')]"
             }
         }
     }
