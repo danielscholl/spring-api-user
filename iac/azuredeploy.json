@@ -10,10 +10,12 @@
             "defaultValue": "azure"
         },
         "random": {
-            "type": "string",
+            "type": "int",
             "metadata": {
                 "description": "3 Digit Random Integer"
-            }
+            },
+            "minValue": 100,
+            "maxValue": 999
         },
         "imageName": {
             "type": "string",
