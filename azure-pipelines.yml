@@ -53,19 +53,20 @@ stages:
 
       # now we use the value, no matter where we got it
       - script: |
-          echo The IP address is $(RANDOM)
+          echo The Random # is $(RANDOM)
+        displayName: Show RANDOM Number
 
-      # - task: AzureResourceManagerTemplateDeployment@3
-      #   inputs:
-      #     deploymentScope: 'Resource Group'
-      #     ConnectedServiceName: '$(SERVICE_ENDPOINT_ARM)'
-      #     subscriptionName: '$(SUBSCRIPTION)'
-      #     action: 'Create Or Update Resource Group'
-      #     resourceGroupName: '$(RESOURCE_GROUP)'
-      #     location: 'Central US'
-      #     templateLocation: 'Linked artifact'
-      #     csmFile: './iac/azuredeploy.json'
-      #     csmParametersFile: './iac/azuredeploy.parameters.json'
-      #     overrideParameters: '-random int($RANDOM)'
-      #     deploymentMode: 'Incremental'
-      #     deploymentName: 'pipeline'
+      - task: AzureResourceManagerTemplateDeployment@3
+        inputs:
+          deploymentScope: 'Resource Group'
+          ConnectedServiceName: '$(SERVICE_ENDPOINT_ARM)'
+          subscriptionName: '$(SUBSCRIPTION)'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: '$(RESOURCE_GROUP)'
+          location: 'Central US'
+          templateLocation: 'Linked artifact'
+          csmFile: './iac/azuredeploy.json'
+          csmParametersFile: './iac/azuredeploy.parameters.json'
+          overrideParameters: '-random int($RANDOM)'
+          deploymentMode: 'Incremental'
+          deploymentName: 'pipeline'
