@@ -53,7 +53,7 @@ stages:
 
       # now we use the value, no matter where we got it
       - script: |
-          echo The Random # is $(RANDOM)
+          echo The Random number is $(RANDOM)
         displayName: Show RANDOM Number
 
       - task: AzureResourceManagerTemplateDeployment@3
@@ -67,6 +67,6 @@ stages:
           templateLocation: 'Linked artifact'
           csmFile: './iac/azuredeploy.json'
           csmParametersFile: './iac/azuredeploy.parameters.json'
-          overrideParameters: '-random int($(RANDOM))'
+          overrideParameters: '-random $(RANDOM)'
           deploymentMode: 'Incremental'
           deploymentName: 'pipeline'
