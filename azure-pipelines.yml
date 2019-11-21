@@ -61,6 +61,6 @@ stages:
           templateLocation: 'Linked artifact'
           csmFile: './iac/azuredeploy.json'
           csmParametersFile: './iac/azuredeploy.parameters.json'
-          overrideParameters: '-random $RANDOM'
+          overrideParameters: '-random int($RANDOM)'
           deploymentMode: 'Incremental'
           deploymentName: 'pipeline'
