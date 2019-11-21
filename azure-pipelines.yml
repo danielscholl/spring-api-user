@@ -48,7 +48,7 @@ stages:
       # Linux
       - bash: |
           export RANDOM=$(shuf -i 100-999 -n 1)
-          echo "##vso[task.setvariable variable=IP_ADDR]$RANDOM"
+          echo "##vso[task.setvariable variable=RANDOM]$RANDOM"
         displayName: Get RANDOM Number
 
       # now we use the value, no matter where we got it
