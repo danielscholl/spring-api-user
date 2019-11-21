@@ -64,9 +64,9 @@ stages:
         condition: eq( variables['Agent.OS'], 'Windows_NT' )
         displayName: Get IP on Windows
 
-  # now we use the value, no matter where we got it
-  - script: |
-      echo The IP address is $(IP_ADDR)
+      # now we use the value, no matter where we got it
+      - script: |
+          echo The IP address is $(IP_ADDR)
 
       # - task: AzureResourceManagerTemplateDeployment@3
       #   inputs:
