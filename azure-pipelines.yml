@@ -47,7 +47,7 @@ stages:
     steps:
       # Linux
       - bash: |
-          export RANDOM=$(shuf -i 100-999 -n 1)
+          export RANDOM=$(shuf -i 100-999 -n 1 |cut -c 1-3)
           echo "##vso[task.setvariable variable=RANDOM]$RANDOM"
         displayName: Get RANDOM Number
 
@@ -67,6 +67,6 @@ stages:
           templateLocation: 'Linked artifact'
           csmFile: './iac/azuredeploy.json'
           csmParametersFile: './iac/azuredeploy.parameters.json'
-          overrideParameters: '-random int($RANDOM)'
+          overrideParameters: '-random $RANDOM'
           deploymentMode: 'Incremental'
           deploymentName: 'pipeline'
