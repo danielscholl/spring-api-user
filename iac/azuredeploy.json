@@ -6,7 +6,8 @@
             "type": "string",
             "metadata": {
                 "description": "Small unique string."
-            }
+            },
+            "defaultValue": "azure"
         },
         "random": {
             "type": "int",
