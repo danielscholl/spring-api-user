@@ -49,7 +49,7 @@ stages:
       - bash: |
           export UNIQUE=$(shuf -i 100-999 -n 1 |cut -c 1-3)
           echo "##vso[task.setvariable variable=RANDOM]$UNIQUE"
-        condition: ne( variables['RANDOM'], Null )
+        condition: eq( variables['RANDOM'], '' )
         displayName: Get RANDOM Number
 
       # now we use the value, no matter where we got it
