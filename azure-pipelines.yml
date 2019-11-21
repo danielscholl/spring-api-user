@@ -45,6 +45,11 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
+      - bash: |
+          export RANDOM=$(shuf -i 100-999 -n 1)
+          echo "##vso[task.setvariable variable=RANDOM]$RANDOM"
+        condition: eq( variables['Agent.OS'], 'Linux' )
+        displayName: Get Random Number
       - task: AzureResourceManagerTemplateDeployment@3
         inputs:
           deploymentScope: 'Resource Group'
@@ -56,6 +61,6 @@ stages:
           templateLocation: 'Linked artifact'
           csmFile: './iac/azuredeploy.json'
           csmParametersFile: './iac/azuredeploy.parameters.json'
-          overrideParameters: ''
+          overrideParameters: '-random $RANDOM'
           deploymentMode: 'Incremental'
           deploymentName: 'pipeline'

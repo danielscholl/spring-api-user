@@ -14,7 +14,6 @@
             "metadata": {
                 "description": "3 Digit Random Integer"
             },
-            "defaultValue": "[int(substring(uniqueString(resourceGroup().id),0,3))]",
             "minValue": 100,
             "maxValue": 999
         },
