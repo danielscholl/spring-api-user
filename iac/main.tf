@@ -81,11 +81,12 @@ locals {
   base_name_83 = length(local.base_name) < 84 ? local.base_name : "${substr(local.base_name, 0, 83 - length(local.suffix))}${local.suffix}"
 
   // Resolved resource names
-  app_rg_name             = "${local.base_name_83}-api"      // app resource group (max 90 chars)
-  cosmosdb_account_name   = "${local.base_name}-db"          // cosmosdb account
-  cosmosdb_database_name  = "${var.name}-api"                // cosmosdb database
-  cosmosdb_container_name = "user"                           // cosmosdb container
-  sp_name                 = "${local.base_name}-plan"        // service plan
+  app_rg_name             = "${local.base_name_83}-api"
+  kv_name                 = "${local.base_name_21}-kv"
+  cosmosdb_account_name   = "${local.base_name}-db"
+  cosmosdb_database_name  = "${var.name}-api"
+  cosmosdb_container_name = "user"
+  sp_name                 = "${local.base_name}-plan"
   app_svc_name            = "${local.base_name}"
 
   // Resolved TF Vars
@@ -123,10 +124,26 @@ module "resourcegroup" {
 
 
 #-------------------------------
+# Azure Key Vault
+#-------------------------------
+module "keyvault" {
+  # Module Path
+  source                    = "./modules/providers/azure/keyvault"
+
+  # Module variable
+  name                      = local.kv_name
+  resource_group            = module.resourcegroup.name
+}
+
+
+#-------------------------------
 # Cosmos Database
 #-------------------------------
 module "cosmosdb" {
+  # Module Path
   source                    = "./modules/providers/azure/cosmosdb"
+
+  # Module variable
   name                      = local.cosmosdb_account_name
   resource_group            = module.resourcegroup.name
   kind                      = "GlobalDocumentDB"
@@ -142,13 +159,19 @@ module "cosmosdb" {
 # Web Site
 #-------------------------------
 module "service_plan" {
+  # Module Path
   source                          = "./modules/providers/azure/service-plan"
+
+  # Module variable
   name                            = local.sp_name
   resource_group                  = module.resourcegroup.name
 }
 
 module "app_service" {
+  # Module Path
   source                           = "./modules/providers/azure/app-service"
+
+  # Module variable
   name                             = local.app_svc_name
   resource_group                   = module.resourcegroup.name
   service_plan_name                = module.service_plan.name
