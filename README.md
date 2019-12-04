@@ -19,7 +19,7 @@ Default Environment Settings
 | _cosmosdb_account_            | __(Post Provision Value)__           | CosmosDB URI                             |
 | _cosmosdb_key_                | __(Post Provision Value)__           | CosmosDB Primary Key                     |
 
-### Provision Infrastruture
+### Provision Infrastruture using ARM
 
 >Note: Scripts are using powershell core and the AZ module
 
@@ -48,6 +48,34 @@ webAppObject:    {
     "plan_Name": "plan-linux000",
     "webapp_name": "web-linux000"
 }
+```
+
+### Provision Infrastruture using Terraform
+
+Terraform configuration is based off of Microsoft Project Cobalt which can be found [here](https://github.com/microsoft/cobalt)
+
+```bash
+cd iac/templates
+
+# This configures terraform to leverage a remote backend that will help you and your
+# team keep consistent state
+terraform init \
+  -backend-config "storage_account_name=${TF_VAR_remote_state_account}" \
+  -backend-config "container_name=${TF_VAR_remote_state_container}"
+
+# This command configures terraform to use a workspace unique to you. This allows you to work
+# without stepping over your teammate's deployments
+terraform workspace new $USER || terraform workspace select $USER
+
+# See what terraform will try to deploy without actually deploying
+terraform plan
+
+# Execute a deployment
+terraform apply
+
+# Destroy resources and tear down deployment. Only do this if you want to destroy your deployment.
+terraform destroy
+
 ```
 
 ### Run the Application Locally and Test the API  (Optional)
