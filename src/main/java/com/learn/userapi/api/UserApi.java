@@ -5,6 +5,7 @@ import java.util.List;
 import com.learn.userapi.model.User;
 import com.learn.userapi.service.UserService;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping(value={"/api"})
+
 public class UserApi {
 
     @Autowired
@@ -30,6 +32,7 @@ public class UserApi {
 
     // CREATE
     @PostMapping(value="/user", headers="Accept=application/json")
+    @PreAuthorize("hasRole('ROLE_Owner')")
     public ResponseEntity<User> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder){
         System.out.println("Creating User " + user.getName());
         User newUser = userService.createUser(user);
