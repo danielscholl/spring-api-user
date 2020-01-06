@@ -38,3 +38,4 @@ build/
 
 ### Terraform ###
 .terraform/
+*.tfplan
